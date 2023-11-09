@@ -1,18 +1,32 @@
-
-import { Link} from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Lottie from "lottie-react";
 import login from "../../assets/images/logIn.json";
+import { useContext } from "react";
+import { AuthContext } from "../providers/AuthProvider";
 const LogIn = () => {
+
+  const {logIn} = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
+
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-    
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data)
+    logIn(data.email, data.password)
+    .then((result) => {
+      console.log(result.user)
+      reset();
+      navigate(from,{replace: true});
+
+    })
   };
 
   return (
@@ -79,7 +93,6 @@ const LogIn = () => {
                 />
               </div>
             </form>
-            
 
             <p>
               <small className="text-orange-600 ml-6 text-sm">

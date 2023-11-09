@@ -1,20 +1,36 @@
 
 
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 import login from "../../assets/images/logIn.json";
+import { useContext } from "react";
+import { AuthContext } from "../providers/AuthProvider";
 
 const Register = () => {
+  const {createUser, updateUserData} = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
-    
+    reset,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => console.log(data)
+  const onSubmit = (data) => {
+      createUser(data.email , data.password)
+      .then((result)=> {
+        const loggedUser = result.user;
+        console.log(loggedUser);
+        updateUserData(loggedUser, data.username)
+        reset()
+        navigate("/")
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
 
   return (
     <div className="hero min-h-screen bg-base-200">

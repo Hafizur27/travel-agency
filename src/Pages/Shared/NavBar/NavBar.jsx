@@ -1,8 +1,20 @@
-import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../providers/AuthProvider";
 
 const NavBar = () => {
- 
-  
+  const { user, logOut } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const handleLogOut = () => {
+    logOut()
+      .then(() => {
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const navOptions = (
     <>
       <li>
@@ -15,19 +27,20 @@ const NavBar = () => {
       <li>
         <Link to="/about">About</Link>
       </li>
-      <li className="mb-2">
-            <button
-              className="btn btn-sm bg-green-500 text-white hover:bg-lime-400 border-2"
-            >
-              logOut
-            </button>
-          </li>
-          <li>
-            <img className="w-16 h-12 rounded-full " src="" />
-          </li>
-          <li>
-            <Link to="/logIn">LogIn</Link>
-          </li>
+      {user ? (
+        <li className="mb-2">
+          <button
+            onClick={handleLogOut}
+            className="btn btn-sm bg-green-500 text-white hover:bg-lime-400 border-2"
+          >
+            logOut
+          </button>
+        </li>
+      ) : (
+        <li>
+          <Link to="/logIn">LogIn</Link>
+        </li>
+      )}
     </>
   );
   return (
@@ -72,4 +85,4 @@ const NavBar = () => {
   );
 };
 
-export default NavBar
+export default NavBar;
